@@ -44,22 +44,19 @@ function UserData() {
     <div className="App">
       <div className="flex-row">
         {/* start using context */}
-        <UserProvider value={users}>
+        <UserProvider value={{users,addUser,editRow,deleteUser,editing,setEditing,currentUser,updateUser}} >
           <div className="flex-large">
             {editing ? (
               <div>
                 <h2>Edit</h2>
                 <EditUserForm
-                  editing={editing}
-                  setEditing={setEditing}
-                  currentUser={currentUser}
-                  updateUser={updateUser}
+                  
                 />
               </div>
             ) : (
               <div>
                 <h2>Add</h2>
-                <AddUserForm addUser={addUser} />
+                <AddUserForm  />
               </div>
             )}
           </div>
@@ -67,7 +64,7 @@ function UserData() {
           <br />
           <div className="flex-large">
             <h1>List</h1>
-            <UserTable editRow={editRow} deleteUser={deleteUser} />
+            <UserTable  />
           </div>
         </UserProvider>
         {/* end using context */}

@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
+import { UserContext } from "./UserContext";
+
 
 const EditUserForm = (props) => {
-  const [user, setUser] = useState(props.currentUser);
+  const users = useContext(UserContext);
+  const [user, setUser] = useState(users.currentUser);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -10,14 +13,14 @@ const EditUserForm = (props) => {
   };
 
   useEffect(() => {
-    setUser(props.currentUser);
-  }, [props]);
+    setUser(users.currentUser);
+  }, [users]);
 
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        props.updateUser(user.id, user);                
+        users.updateUser(user.id, user);                
       }}
     >
       <input
@@ -29,7 +32,7 @@ const EditUserForm = (props) => {
 
       <button>Update </button>
       <button
-        onClick={() => props.setEditing(false)}
+        onClick={() => users.setEditing(false)}
         className="button muted-button"
       >
         Cancel

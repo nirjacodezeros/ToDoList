@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "./UserContext";
 
 const AddUserForm = props => {
+  const users = useContext(UserContext);
   const initialFormState = { id: null, name: ""};
   const [user, setUser] = useState(initialFormState);
 
@@ -16,7 +18,7 @@ const AddUserForm = props => {
         event.preventDefault();
         if (!user.name ) return;
 
-        props.addUser(user);
+        users.addUser(user);
         event.target.reset();
       }}
     >
