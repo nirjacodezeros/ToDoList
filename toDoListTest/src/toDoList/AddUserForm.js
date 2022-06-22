@@ -28,7 +28,7 @@ const AddUserForm = props => {
         onChange={handleInputChange}
       />
       
-      <button>Add</button>
+      <button className="btn btn-primary btn-class">Add</button>
     </form>
   );
 };

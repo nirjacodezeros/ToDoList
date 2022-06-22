@@ -87,3 +87,7 @@ input[type='email']{
 .error{
   color: red;
 }
+
+.btn-class {
+  margin-left: 4px;
+}
