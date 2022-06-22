@@ -9,7 +9,6 @@ function AddUserForm(props) {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log(event.target);
     setUser({ ...user, [name]: value });
   };
 
@@ -25,7 +24,7 @@ function AddUserForm(props) {
     >
       <input type="text" name="name" onChange={handleInputChange} />
 
-      <button>Add</button>
+      <button className="btn btn-primary">Add</button>
     </form>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { UserContext } from './userContext';
-
+//import styles from '../../styles/globals.css'
+// import Button from "./Button.module.css"
 
 const UserTable = (props) => {
   const users = useContext(UserContext);
@@ -24,13 +25,13 @@ const UserTable = (props) => {
                     onClick={() => {
                       users.editRow(user);
                     }}
-                    className="button muted-button"
+                    className="btn btn-info btn-class"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => users.deleteUser(user.id)}
-                    className="button muted-button"
+                   className="btn btn-danger btn-class"
                   >
                     Delete
                   </button>

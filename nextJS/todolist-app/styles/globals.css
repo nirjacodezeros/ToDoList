@@ -14,3 +14,7 @@ a {
 * {
   box-sizing: border-box;
 }
+.btn {
+  margin-left: 4px;
+  
+}
