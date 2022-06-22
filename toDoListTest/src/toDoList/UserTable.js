@@ -23,7 +23,7 @@ const UserTable = (props) => {
                     onClick={() => {
                       users.editRow(user);
                     }}
-                    className="btn btn-info"
+                    className="btn btn-info btn-class"
                   >
                     Edit
                   </button>

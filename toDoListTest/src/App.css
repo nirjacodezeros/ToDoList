@@ -90,4 +90,6 @@ input[type='email']{
 
 .btn-class {
   margin-left: 4px;
+  padding: 3px !important;
+    width: 73px !important;
 }
