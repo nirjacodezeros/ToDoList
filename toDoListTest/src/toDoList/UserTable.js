@@ -9,6 +9,7 @@ const UserTable = (props) => {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -18,6 +19,19 @@ const UserTable = (props) => {
             users.users.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
+                <td>
+                  {user.image.length > 0 &&
+                    user.image.map((item, index) => {
+                      return (
+                        <div key={item}>
+                          <img src={item} alt=""  width="60px"/>
+                          {/* <button type="button" onClick={() => deleteFile(index)}>
+                  delete
+                </button> */}
+                        </div>
+                      );
+                    })}
+                </td>
                 <td>
                   <button
                     onClick={() => {

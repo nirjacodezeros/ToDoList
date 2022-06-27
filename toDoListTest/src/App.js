@@ -15,8 +15,8 @@ function App() {
   return (
     <div className="App">
       <div className="flex-row">
-          {/* <UserData/> */}
-          <CheckBox/>
+          <UserData/>
+          {/* <CheckBox/> */}
       </div>
       
       <br />

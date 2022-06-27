@@ -6,15 +6,32 @@ import EditUserForm from "./EditUserForm";
 import { UserProvider } from "./UserContext";
 import UserTable from "./UserTable";
 
-
 function UserData() {
   const usersData = [
-    { id: 1, name: "React" },
-    { id: 2, name: "Angular" },
-    { id: 3, name: "Rust" },
+    {
+      id: 1,
+      name: "React",
+      image: [
+        "https://cdn.shopify.com/s/files/1/0047/9730/0847/products/nurserylive-rose-red-plant_600x600.jpg?v=1634228232",
+      ],
+    },
+    {
+      id: 2,
+      name: "Angular",
+      image: [
+        "https://cdn.shopify.com/s/files/1/0047/9730/0847/products/nurserylive-rose-red-plant_600x600.jpg?v=1634228232",
+      ],
+    },
+    {
+      id: 3,
+      name: "Rust",
+      image: [
+        "https://cdn.shopify.com/s/files/1/0047/9730/0847/products/nurserylive-rose-red-plant_600x600.jpg?v=1634228232",
+      ],
+    },
   ];
 
-  const initialFormState = { id: null, name: "" };
+  const initialFormState = { id: null, name: "", image: [] };
 
   const [users, setUsers] = useState(usersData);
   const [editing, setEditing] = useState(false);
@@ -32,7 +49,7 @@ function UserData() {
 
   const editRow = (user) => {
     setEditing(true);
-    setCurrentUser({ id: user.id, name: user.name });
+    setCurrentUser({ id: user.id, name: user.name, image: user.image });
   };
 
   const updateUser = (id, updatedUser) => {
@@ -45,20 +62,29 @@ function UserData() {
       <div className="flex-row">
         {/* start using context */}
         <h2>React ToDoList</h2>
-        <br/>
-        <UserProvider value={{users,addUser,editRow,deleteUser,editing,setEditing,currentUser,updateUser}} >
+        <br />
+        <UserProvider
+          value={{
+            users,
+            addUser,
+            editRow,
+            deleteUser,
+            editing,
+            setEditing,
+            currentUser,
+            updateUser,
+          }}
+        >
           <div className="flex-large">
             {editing ? (
               <div>
                 <h6>Edit</h6>
-                <EditUserForm
-                  
-                />
+                <EditUserForm />
               </div>
             ) : (
               <div>
                 <h6>Add</h6>
-                <AddUserForm  />
+                <AddUserForm />
               </div>
             )}
           </div>
@@ -66,7 +92,7 @@ function UserData() {
           <br />
           <div className="flex-large">
             <h6>List</h6>
-            <UserTable  />
+            <UserTable />
           </div>
         </UserProvider>
         {/* end using context */}
