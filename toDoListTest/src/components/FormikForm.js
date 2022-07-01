@@ -13,8 +13,8 @@ const initialValues = {
   firstname: "",
   lastname: "",
   country: "",
-  status:"",
-  image : ""
+  status: "",
+  image: "",
 };
 
 const onSubmit = (values) => {
@@ -159,13 +159,9 @@ export default function FormikForm() {
               );
             })}
           </div> */}
-           <div className="form-group">
+          <div className="form-group">
             <label htmlFor="image">Image:</label>
-            <input
-              type="file"
-              name="image"
-              onChange={formik.handleChange}
-            />
+            <input type="file" name="image" onChange={formik.handleChange} />
             <img src={values.image} />
             {formik.errors.image ? (
               <div className="error">{formik.errors.image}</div>

@@ -1,0 +1,20 @@
+.cluster-marker {
+    color: #fff;
+    background: #1978c8;
+    border-radius: 50%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .loc-image {
+    background: none;
+    border: none;
+  }
+  
+  .loc-image img {
+    width: 20px;
+  }
+  

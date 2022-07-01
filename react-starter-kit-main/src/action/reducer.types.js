@@ -1,0 +1,12 @@
+import Axios from 'axios'
+
+export const API = 'API'
+export const API_START = 'API_START'
+export const API_END = 'API_END'
+export const ACCESS_DENIED = 'ACCESS_DENIED'
+export const API_ERROR = 'API_ERROR'
+export const API_SUCCESS = 'API_SUCCESS'
+export const APP_DATA = 'APP_DATA'
+export const LOGOUT = 'LOGOUT'
+export const ACTION_TYPE = 'ACTION_TYPE'
+export const LOG_IN = 'LOG_IN'
