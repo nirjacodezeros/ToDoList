@@ -4,7 +4,8 @@ import Register from "./components/views/Register";
 import Forgot from "./components/views/Forgot";
 import AddFormik from "./components/views/AddFormik";
 import Edit from "./components/views/Edit";
-import AddEditFormikYup from "./components/views/AddEditFormikYup";
+import AddFormikYup from "./components/views/AddFormikYup";
+import ListFormikYup from "./components/views/ListFormikYup";
 
 
 
@@ -19,7 +20,9 @@ const Auth = () => {
         <Route path="/add" comp
         onent={AddFormik} />
         <Route path="/edit" component={Edit} />
-        <Route path="/addEdit" component={AddEditFormikYup}/>
+        <Route path="/addItem" component={AddFormikYup}/>
+        <Route path="/editItem/:id" component={AddFormikYup} />
+        <Route path="/" component={ListFormikYup}/>
       </Switch>
     </Router>
   );

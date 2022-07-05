@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { service } from "./Service";
+import { Link, useParams } from "react-router-dom";
 
-export default function AddEditFormikYup() {
+export default function AddFormikYup() {
+  const [user, setUser] = useState({});
+  const params = useParams();
+  let id;
+  if (params.id) {
+    id = params.id;
+  }
+  const isAddMode = !id;
+
   const initialValues = {
-    name: "",
+    name: user.name ? user.name : "",
     email: "",
     country: "",
     gender: "",
@@ -18,7 +28,7 @@ export default function AddEditFormikYup() {
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Email is invalid").required("Email is required"),
     country: Yup.string().required("Country is required"),
-    gender: Yup.string().required("Gender is required"),
+    /*  gender: Yup.string().required("Gender is required"),
     hobby: Yup.string().required("Hobby is required"),
     password: Yup.string()
       .concat(Yup.string().required("Password is required"))
@@ -27,29 +37,41 @@ export default function AddEditFormikYup() {
       .when("password", (password, schema) => {
         if (password) return schema.required("Confirm Password is required");
       })
-      .oneOf([Yup.ref("password")], "Passwords must match"),
-    image: Yup.string()
-      .required("Image is required")
-      .test(
-        "fileSize",
-        "File size too large, max file size is 1 Mb" ,
-        (file) => {
-          if (file) {
-            return file.size <= 1100000;
-          } else {
-            return true;
-          }
-        }
-      )
-      .test("FILE_FORMAT", "Uploaded file has unsupported format.", (value) => {
-        if (value) {
-          return ["image/jpg", "image/jpeg", "image/png"].includes(value.type);
-        } else {
-          return true;
-        }
-      }),
-    
+      .oneOf([Yup.ref("password")], "Passwords must match"), */
+    // image: Yup.string()
+    //   .required("Image is required")
+    //   .test(
+    //     "fileSize",
+    //     "File size too large, max file size is 1 Mb" ,
+    //     (file) => {
+    //       if (file) {
+    //         return file.size <= 1100000;
+    //       } else {
+    //         return true;
+    //       }
+    //     }
+    //   )
+    //   .test("FILE_FORMAT", "Uploaded file has unsupported format.", (value) => {
+    //     if (value) {
+    //       return ["image/jpg", "image/jpeg", "image/png"].includes(value.type);
+    //     } else {
+    //       return true;
+    //     }
+    //   }),
   });
+
+  useEffect(() => {
+    if (!isAddMode) {
+      // get user and set form fields
+      console.log("id......", params);
+      service.getItemId(params.id).then((user) => {
+        setUser(user.data.data);
+        /* const fields = ["title", "firstName", "lastName", "email", "role"];
+        fields.forEach((field) => user[field]);
+        setUser(user); */
+      });
+    }
+  }, []);
 
   const handleInputChange = (event) => {
     setImg({ ...img });
@@ -64,38 +86,47 @@ export default function AddEditFormikYup() {
   function deleteFile(e) {
     img.image.splice(e, 1);
     setImg(img);
-    console.log("im......", img);
   }
 
   function onSubmit(fields, { setStatus, setSubmitting }) {
-    console.log("data......", fields);
-    alert("Update Sucessfully....!!", fields);
     setStatus();
+    if (isAddMode) {
+      console.log("create.......")
+      createUser(fields, setSubmitting);
+    } else {
+      console.log("update.......",id , fields ,setSubmitting )
+      updateItem(id, fields, setSubmitting);
+    }
   }
 
-  // function createUser(fields, setSubmitting) {
-  //   userService.create(fields)
-  //       .then(() => {
-  //           alertService.success('User added', { keepAfterRouteChange: true });
-  //           history.push('.');
-  //       })
-  //       .catch(() => {
-  //           setSubmitting(false);
-  //           alertService.error(error);
-  //       });
-  // }
+  function createUser(fields, setSubmitting) {
+    service
+      .addNewItem(fields)
+      .then((data) => {
+        console.log("data.....", data);
+        // alertService.success('User added', { keepAfterRouteChange: true });
+        // history.push('.');
+      })
+      .catch(() => {
+        setSubmitting(false);
+        // alertService.error(error);
+      });
+  }
 
-  // function updateUser(id, fields, setSubmitting) {
-  //   userService.update(id, fields)
-  //       .then(() => {
-  //           alertService.success('User updated', { keepAfterRouteChange: true });
-  //           history.push('..');
-  //       })
-  //       .catch(error => {
-  //           setSubmitting(false);
-  //           alertService.error(error);
-  //       });
-  // }
+  function updateItem(id, fields, setSubmitting) {
+    console.log("updatevalue.......",id , fields ,setSubmitting )
+    service
+      .updateItem(id, fields)
+      .then((data) => {
+        console.log("data.....", data);
+        /* alertService.success("User updated", { keepAfterRouteChange: true });
+        history.push(".."); */
+      })
+      .catch((error) => {
+        setSubmitting(false);
+        // alertService.error(error);
+      });
+  }
 
   return (
     <Formik
@@ -107,33 +138,25 @@ export default function AddEditFormikYup() {
         // const [user, setUser] = useState({});
         // const [showPassword, setShowPassword] = useState(false);
 
-        // useEffect(() => {
-        //   if (!isAddMode) {
-        //     // get user and set form fields
-        //     userService.getById(id).then((user) => {
-        //       const fields = [
-        //         "title",
-        //         "firstName",
-        //         "lastName",
-        //         "email",
-        //         "role",
-        //       ];
-        //       fields.forEach((field) =>
-        //         setFieldValue(field, user[field], false)
-        //       );
-        //       setUser(user);
-        //     });
-        //   }
-        // }, []);
-
+        /* useEffect(() => {
+          if (!isAddMode) {
+              // get user and set form fields
+              userService.getById(id).then(user => {
+                  const fields = ['title', 'firstName', 'lastName', 'email', 'role'];
+                  fields.forEach(field => setFieldValue(field, user[field], false));
+                  setUser(user);
+              });
+          }
+      }, []); */
         return (
           <Form>
-            {/* <h1>{isAddMode ? "Add User" : "Edit User"}</h1> */}
+            <h1>{isAddMode ? "Add Item" : "Edit Item"}</h1>
             <div className="form-row">
               <div className="form-group col-5">
                 <label>Name</label>
                 <Field
                   name="name"
+                  value={user.name}
                   type="text"
                   className={
                     "form-control" +
@@ -151,6 +174,7 @@ export default function AddEditFormikYup() {
                 <label>Email</label>
                 <Field
                   name="email"
+                  value={user.email}
                   type="text"
                   className={
                     "form-control" +
@@ -170,6 +194,7 @@ export default function AddEditFormikYup() {
                 <Field
                   name="country"
                   as="select"
+                  value={user.country}
                   className={
                     "form-control" +
                     (errors.country && touched.country ? " is-invalid" : "")
@@ -193,6 +218,7 @@ export default function AddEditFormikYup() {
                 <Field
                   name="gender"
                   component="div"
+                  value={user.gender}
                   className={
                     "form-control" +
                     (errors.gender && touched.gender ? " is-invalid" : "")
@@ -218,6 +244,7 @@ export default function AddEditFormikYup() {
                 <label>Hobby</label>
                 <Field
                   name="hobby"
+                  value={user.hobby}
                   component="div"
                   className={
                     "form-control" +
