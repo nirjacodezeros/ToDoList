@@ -6,6 +6,7 @@ import AddFormik from "./components/views/AddFormik";
 import Edit from "./components/views/Edit";
 import AddFormikYup from "./components/views/AddFormikYup";
 import ListFormikYup from "./components/views/ListFormikYup";
+import "./App.css";
 
 
 

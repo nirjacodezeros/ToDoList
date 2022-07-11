@@ -2,19 +2,13 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { service } from "./Service";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
+import toastr from "toastr";
+import "toastr/build/toastr.min.css";
 
 export default function AddFormikYup() {
-  const [user, setUser] = useState({});
-  const params = useParams();
-  let id;
-  if (params.id) {
-    id = params.id;
-  }
-  const isAddMode = !id;
-
-  const initialValues = {
-    name: user.name ? user.name : "",
+  let initialValues = {
+    name: "",
     email: "",
     country: "",
     gender: "",
@@ -23,34 +17,68 @@ export default function AddFormikYup() {
     confirmPassword: "",
     image: [],
   };
+
+  toastr.options = {
+    closeButton: false,
+    debug: false,
+    newestOnTop: false,
+    progressBar: false,
+    positionClass: "toast-top-right",
+    preventDuplicates: false,
+    onclick: null,
+    showDuration: "300",
+    hideDuration: "1000",
+    timeOut: "5000",
+    extendedTimeOut: "1000",
+    showEasing: "swing",
+    hideEasing: "linear",
+    showMethod: "fadeIn",
+    hideMethod: "fadeOut",
+  };
+  const [user, setUser] = useState(initialValues);
+  const history = useHistory();
+  useEffect(() => {
+    if (!isAddMode) {
+      // get user and set form fields
+      service.getItemId(params.id).then((user) => {
+         initialValues.name = user.data.data.name;
+        initialValues.email = user.data.data.email;
+        initialValues.country = user.data.data.country;
+        initialValues.gender = user.data.data.gender;
+        initialValues.hobby = user.data.data.hobby; 
+        // initialValues.image = user.data.data.image;
+        setUser(user.data.data);
+      });
+    }
+  }, []);
+
+  const params = useParams();
+  let id;
+  if (params.id) {
+    id = params.id;
+  }
+  const isAddMode = !id;
+
   const [img, setImg] = useState(initialValues);
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Email is invalid").required("Email is required"),
     country: Yup.string().required("Country is required"),
-    /*  gender: Yup.string().required("Gender is required"),
+    gender: Yup.string().required("Gender is required"),
     hobby: Yup.string().required("Hobby is required"),
-    password: Yup.string()
-      .concat(Yup.string().required("Password is required"))
-      .min(6, "Password must be at least 6 characters"),
-    confirmPassword: Yup.string()
-      .when("password", (password, schema) => {
-        if (password) return schema.required("Confirm Password is required");
-      })
-      .oneOf([Yup.ref("password")], "Passwords must match"), */
-    // image: Yup.string()
-    //   .required("Image is required")
-    //   .test(
-    //     "fileSize",
-    //     "File size too large, max file size is 1 Mb" ,
-    //     (file) => {
-    //       if (file) {
-    //         return file.size <= 1100000;
-    //       } else {
-    //         return true;
-    //       }
-    //     }
-    //   )
+
+    image: Yup.string().required("Image is required"),
+    /* .test(
+         "fileSize",
+         "File size too large, max file size is 1 Mb" ,
+         (file) => {
+           if (file) {
+             return file.size <= 1100000;
+           } else {
+             return true;
+           }
+         }
+       ) */
     //   .test("FILE_FORMAT", "Uploaded file has unsupported format.", (value) => {
     //     if (value) {
     //       return ["image/jpg", "image/jpeg", "image/png"].includes(value.type);
@@ -60,42 +88,30 @@ export default function AddFormikYup() {
     //   }),
   });
 
-  useEffect(() => {
-    if (!isAddMode) {
-      // get user and set form fields
-      console.log("id......", params);
-      service.getItemId(params.id).then((user) => {
-        setUser(user.data.data);
-        /* const fields = ["title", "firstName", "lastName", "email", "role"];
-        fields.forEach((field) => user[field]);
-        setUser(user); */
-      });
-    }
-  }, []);
-
   const handleInputChange = (event) => {
-    setImg({ ...img });
+    setUser({ ...user });
     if (event.target.files && event.target.files.length >= 1) {
       for (var i = 0; i < event.target.files.length; i++) {
-        img.image.push(URL.createObjectURL(event.target.files[i]));
+        user.image.push(URL.createObjectURL(event.target.files[i]));
       }
     }
-    setImg(img);
+    setUser(user);
   };
 
   function deleteFile(e) {
-    img.image.splice(e, 1);
-    setImg(img);
+    user.image.splice(e, 1);
+    setUser(user);
   }
 
   function onSubmit(fields, { setStatus, setSubmitting }) {
-    setStatus();
+    // setStatus();
+    fields.image = user.image;
     if (isAddMode) {
-      console.log("create.......")
       createUser(fields, setSubmitting);
+      history.push("/");
     } else {
-      console.log("update.......",id , fields ,setSubmitting )
       updateItem(id, fields, setSubmitting);
+      history.push("/");
     }
   }
 
@@ -103,9 +119,12 @@ export default function AddFormikYup() {
     service
       .addNewItem(fields)
       .then((data) => {
-        console.log("data.....", data);
-        // alertService.success('User added', { keepAfterRouteChange: true });
-        // history.push('.');
+        if (data.data.success) {
+          toastr.success(data.data.message);
+        }
+        else{
+          toastr.error(data.data.message);
+        }
       })
       .catch(() => {
         setSubmitting(false);
@@ -114,17 +133,18 @@ export default function AddFormikYup() {
   }
 
   function updateItem(id, fields, setSubmitting) {
-    console.log("updatevalue.......",id , fields ,setSubmitting )
     service
       .updateItem(id, fields)
       .then((data) => {
-        console.log("data.....", data);
-        /* alertService.success("User updated", { keepAfterRouteChange: true });
-        history.push(".."); */
+        if (data.data.success) {
+          toastr.success(data.data.message);
+        }
+        else{
+          toastr.error(data.data.message);
+        }
       })
       .catch((error) => {
         setSubmitting(false);
-        // alertService.error(error);
       });
   }
 
@@ -134,20 +154,7 @@ export default function AddFormikYup() {
       validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
-      {({ errors, touched, isSubmitting, setFieldValue }) => {
-        // const [user, setUser] = useState({});
-        // const [showPassword, setShowPassword] = useState(false);
-
-        /* useEffect(() => {
-          if (!isAddMode) {
-              // get user and set form fields
-              userService.getById(id).then(user => {
-                  const fields = ['title', 'firstName', 'lastName', 'email', 'role'];
-                  fields.forEach(field => setFieldValue(field, user[field], false));
-                  setUser(user);
-              });
-          }
-      }, []); */
+      {({ errors, touched, isSubmitting }) => {
         return (
           <Form>
             <h1>{isAddMode ? "Add Item" : "Edit Item"}</h1>
@@ -174,7 +181,6 @@ export default function AddFormikYup() {
                 <label>Email</label>
                 <Field
                   name="email"
-                  value={user.email}
                   type="text"
                   className={
                     "form-control" +
@@ -194,7 +200,6 @@ export default function AddFormikYup() {
                 <Field
                   name="country"
                   as="select"
-                  value={user.country}
                   className={
                     "form-control" +
                     (errors.country && touched.country ? " is-invalid" : "")
@@ -218,7 +223,6 @@ export default function AddFormikYup() {
                 <Field
                   name="gender"
                   component="div"
-                  value={user.gender}
                   className={
                     "form-control" +
                     (errors.gender && touched.gender ? " is-invalid" : "")
@@ -244,7 +248,6 @@ export default function AddFormikYup() {
                 <label>Hobby</label>
                 <Field
                   name="hobby"
-                  value={user.hobby}
                   component="div"
                   className={
                     "form-control" +
@@ -272,7 +275,7 @@ export default function AddFormikYup() {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-group col-5">
+              {/*  <div className="form-group col-5">
                 <label>Password</label>
                 <Field
                   name="password"
@@ -305,12 +308,13 @@ export default function AddFormikYup() {
                   component="div"
                   className="invalid-feedback"
                 />
-              </div>
+              </div> */}
 
               <div className="form-group col-5">
                 <label>Image</label>
                 <Field
                   name="image"
+                  multiple
                   component="div"
                   className={
                     "form-control" +
@@ -324,8 +328,8 @@ export default function AddFormikYup() {
                     onChange={handleInputChange}
                   />
                   <div className="form-group preview">
-                    {img && img.image && img.image.length > 0 ? (
-                      img.image.map((item, index) => {
+                    {user && user.image && user.image.length > 0 ? (
+                      user.image.map((item, index) => {
                         return (
                           <div key={index}>
                             <img src={item} alt="" width="60px" />

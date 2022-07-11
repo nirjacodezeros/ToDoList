@@ -3,44 +3,45 @@ const app = express()
 const mongoose = require("mongoose")
 
 port = 3080;
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger.json');
-// const randomId = require('random-id');
+
 var cors = require('cors')
 const CrudRoutes = require('./routes/crudRoutes')
 app.use(express.json())
 app.use(cors())
 app.use('/api',CrudRoutes);
 
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+const randomId = require('random-id');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// let tasks = [
-//   {
-//     id: 1,
-//     task: 'task1',
-//     assignee: 'assignee1000',
-//     status: 'completed'
-//   },
-//   {
-//     id: 2,
-//     task: 'task2',
-//     assignee: 'assignee1001',
-//     status: 'completed'
-//   },
-//   {
-//     id: 3,
-//     task: 'task3',
-//     assignee: 'assignee1002',
-//     status: 'completed'
-//   },
-//   {
-//     id: 4,
-//     task: 'task4',
-//     assignee: 'assignee1000',
-//     status: 'completed'
-//   },
+let tasks = [
+  {
+    id: 1,
+    task: 'task1',
+    assignee: 'assignee1000',
+    status: 'completed'
+  },
+  {
+    id: 2,
+    task: 'task2',
+    assignee: 'assignee1001',
+    status: 'completed'
+  },
+  {
+    id: 3,
+    task: 'task3',
+    assignee: 'assignee1002',
+    status: 'completed'
+  },
+  {
+    id: 4,
+    task: 'task4',
+    assignee: 'assignee1000',
+    status: 'completed'
+  },
   
-// ];
+ ];
 // app.get('/api/todos', (req, res) => {
 //   console.log('api/todos called!!!!!')
 //   res.json(tasks);

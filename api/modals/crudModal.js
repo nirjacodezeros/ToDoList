@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
- var crudSchema = new Schema({
+var crudSchema = new Schema({
   name: {
     type: String,
     required: "Enter the name",
@@ -20,11 +20,10 @@ var Schema = mongoose.Schema;
   country: {
     type: String,
   },
+  hobby: [],
   password: {
     type: String,
   },
-  image: {
-    type: String,
-  },
+  image: []
 });
-module.exports = mongoose.model('crudSchema', crudSchema);
+module.exports = mongoose.model("crudSchema", crudSchema);

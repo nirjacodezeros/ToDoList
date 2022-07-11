@@ -11,15 +11,11 @@ export default function ListFormikYup(match) {
   }, []);
 
   function deleteUser(id) {
-    /* setUsers(
-      users.map((x) => {
-        if (x.id === id) {
-          x.isDeleting = true;
-        }
-        return x;
-      })
-    ); */
-    service.deleteItem(id).then((x) => setUsers(x.data.data));
+    service.deleteItem(id).then((x) => {
+      if (x.data.success) {
+        service.getItem().then((x) => setUsers(x.data.data));
+      }
+    });
   }
 
   return (
@@ -49,7 +45,16 @@ export default function ListFormikYup(match) {
                 <td>{user.email}</td>
                 <td>{user.gender}</td>
                 <td>{user.country}</td>
-                <td>{user.image}</td>
+                <td>
+                  {user.image.length > 0 &&
+                    user.image.map((item, index) => {
+                      return (
+                        <div key={item}>
+                          <img src={item} alt="" width="60px" />
+                        </div>
+                      );
+                    })}
+                </td>
                 <td style={{ whiteSpace: "nowrap" }}>
                   <Link
                     to={`/editItem/${user._id}`}
